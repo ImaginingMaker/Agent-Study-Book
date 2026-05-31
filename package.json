@@ -1,0 +1,37 @@
+{
+  "name": "agent-dev-guide",
+  "version": "1.0.0",
+  "description": "Agent 开发引导器 — 6 阶段渐进式学习 TypeScript 版",
+  "type": "module",
+  "scripts": {
+    "phase1": "npx tsx phases/phase-1-understand-workflow/src/index.ts",
+    "phase2": "npx tsx phases/phase-2-agent-loop/src/agent_loop.ts",
+    "phase3": "npx tsx phases/phase-3-tools-sandbox/src/index.ts",
+    "phase4": "npx tsx phases/phase-4-context-security/src/index.ts",
+    "phase5": "npx tsx phases/phase-5-eval-observability/src/index.ts",
+    "phase6": "npx tsx phases/phase-6-security-reliability/src/index.ts",
+    "phase7": "npx tsx phases/phase-7-langchain-depth/src/index.ts",
+    "test:phase1": "npx vitest run phases/phase-1-understand-workflow/tests/",
+    "test:phase2": "npx vitest run phases/phase-2-agent-loop/tests/",
+    "test:phase3": "npx vitest run phases/phase-3-tools-sandbox/tests/",
+    "test:phase4": "npx vitest run phases/phase-4-context-security/tests/",
+    "test:phase5": "npx vitest run phases/phase-5-eval-observability/tests/",
+    "test:phase7": "npx vitest run phases/phase-7-langchain-depth/tests/",
+    "test": "npx vitest run",
+    "typecheck": "npx tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.0",
+    "@langchain/community": "^1.1.29",
+    "@langchain/core": "^1.1.48",
+    "chalk": "^5.3.0",
+    "langchain": "^1.4.2",
+    "openai": "^4.70.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "tsx": "^4.16.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
+  }
+}

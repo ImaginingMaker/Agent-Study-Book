@@ -1,0 +1,52 @@
+# Node / TypeScript
+node_modules/
+dist/
+*.tsbuildinfo
+coverage/
+
+# Python (legacy - project migrated to TS)
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+*.egg-info/
+
+# Agent 状态 & 数据（各阶段都可能生成）
+agent_state.json
+*.db
+*.sqlite3
+*.sqlite
+
+# 日志 & 轨迹
+logs/
+trajectories/
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*.swn
+
+# OS
+.DS_Store
+Thumbs.db
+*.AppleDouble
+.LSOverride
+
+# 环境变量（Phase 3+ 用，含 API Key）
+.env
+.env.local
+.env.*.local
+
+# 测试运行产生的临时文件
+*_test.json
+trajectories.json
+trajectory_demo.json
+eval_trajectories.json
+memory_demo.json
+memory_store.json
