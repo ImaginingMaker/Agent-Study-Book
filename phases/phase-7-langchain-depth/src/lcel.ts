@@ -5,7 +5,11 @@
  * 演示声明式链式组合。
  */
 
-import { RunnableSequence, RunnablePassthrough, RunnableParallel } from "@langchain/core/runnables";
+import {
+  RunnableSequence,
+  RunnablePassthrough,
+  RunnableParallel,
+} from "@langchain/core/runnables";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { FakeListChatModel } from "@langchain/core/utils/testing";
@@ -62,11 +66,20 @@ export class LCELDemo {
       responses: ["处理完成！"],
     });
 
+    const prompt = ChatPromptTemplate.fromMessages([["human", "{input}"]]);
+
+    // RunnablePassthrough 透传原始输入，另一个分支预处理
+    // 最后合并为 prompt 所需的 {input} 结构
     const chain = RunnableSequence.from([
       {
-        original: new RunnablePassthrough(),
-        processed: (input: string) => `处理: ${input}`,
+        original: new RunnablePassthrough<string>(),
+        processed: (input: string) => `预处理: ${input}`,
       },
+      // 合并为 prompt 期望的格式
+      (obj: { original: string; processed: string }) => ({
+        input: `原始: ${obj.original} | ${obj.processed}`,
+      }),
+      prompt,
       model,
       new StringOutputParser(),
     ]);

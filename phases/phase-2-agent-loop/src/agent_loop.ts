@@ -9,23 +9,23 @@ import { classifyIntent, getIntentDescription } from "./intent_classifier.js";
 import { AgentState, StateStore } from "./state.js";
 
 const WORKFLOW_MAP: Record<string, string> = {
-  "需求分析": "PRD 生成",
+  需求分析: "PRD 生成",
   "PRD 生成": "技术规格",
-  "技术规格": "架构设计",
-  "架构设计": "组件设计",
-  "组件设计": "代码实现",
-  "代码实现": "代码审查",
-  "代码审查": "评测",
+  技术规格: "架构设计",
+  架构设计: "组件设计",
+  组件设计: "代码实现",
+  代码实现: "代码审查",
+  代码审查: "评测",
 };
 
 const PHASE_DESCRIPTIONS: Record<string, string> = {
-  "需求分析": "澄清用户需求，定义问题边界",
+  需求分析: "澄清用户需求，定义问题边界",
   "PRD 生成": "编写产品需求文档，定义功能清单",
-  "技术规格": "编写技术规格文档，定义 API 和数据模型",
-  "架构设计": "设计系统架构，划分模块边界",
-  "组件设计": "设计 React 组件树和状态方案",
-  "代码实现": "编写实际代码",
-  "代码审查": "审查代码质量",
+  技术规格: "编写技术规格文档，定义 API 和数据模型",
+  架构设计: "设计系统架构，划分模块边界",
+  组件设计: "设计 React 组件树和状态方案",
+  代码实现: "编写实际代码",
+  代码审查: "审查代码质量",
 };
 
 function handleQueryPhase(state: AgentState): string {
@@ -48,13 +48,13 @@ function handleNextStep(state: AgentState): string {
 
 function handleExecutePhase(state: AgentState): string {
   const phaseSkills: Record<string, string> = {
-    "需求分析": "pi-requirement-analyzer",
+    需求分析: "pi-requirement-analyzer",
     "PRD 生成": "pi-prd-generator",
-    "技术规格": "pi-spec-generator",
-    "架构设计": "pi-architecture-designer",
-    "组件设计": "pi-component-designer",
-    "代码实现": "pi-code-implementer",
-    "代码审查": "pi-code-reviewer",
+    技术规格: "pi-spec-generator",
+    架构设计: "pi-architecture-designer",
+    组件设计: "pi-component-designer",
+    代码实现: "pi-code-implementer",
+    代码审查: "pi-code-reviewer",
   };
   const skill = phaseSkills[state.phase];
   if (skill) {
@@ -143,3 +143,5 @@ export async function runAgentLoop(): Promise<void> {
   await store.save(state);
   rl.close();
 }
+
+runAgentLoop().catch(console.error);
