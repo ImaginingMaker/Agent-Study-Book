@@ -132,11 +132,19 @@ export class ToolRegistry {
     try {
       const result = await this.executeWithTimeout(tool, params, startMs);
       const durationMs = Date.now() - startMs;
-      this.addRecord({ toolName: name, params, result, startedAt, durationMs, success: true });
+      this.addRecord({
+        toolName: name,
+        params,
+        result,
+        startedAt,
+        durationMs,
+        success: true,
+      });
       return result;
     } catch (error) {
       const durationMs = Date.now() - startMs;
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       this.addRecord({
         toolName: name,
         params,
@@ -167,7 +175,10 @@ export class ToolRegistry {
   /**
    * 校验参数是否符合工具规格
    */
-  private validateParams(tool: ToolSpec, params: Record<string, unknown>): void {
+  private validateParams(
+    tool: ToolSpec,
+    params: Record<string, unknown>,
+  ): void {
     for (const param of tool.parameters) {
       if (param.required && !(param.name in params)) {
         throw new ToolParameterError(tool.name, `缺少必填参数 "${param.name}"`);
@@ -196,7 +207,9 @@ export class ToolRegistry {
       case "boolean":
         return typeof value === "boolean";
       case "object":
-        return typeof value === "object" && value !== null && !Array.isArray(value);
+        return (
+          typeof value === "object" && value !== null && !Array.isArray(value)
+        );
       case "array":
         return Array.isArray(value);
       default:
@@ -207,31 +220,40 @@ export class ToolRegistry {
   /**
    * 带超时控制的工具执行
    */
-  private async executeWithTimeout(
+  private executeWithTimeout(
     tool: ToolSpec,
     params: Record<string, unknown>,
     startMs: number,
   ): Promise<unknown> {
     const timeoutMs = tool.timeout ?? 30_000;
 
-    const executionPromise = Promise.resolve(tool.fn(params));
-
     if (timeoutMs <= 0) {
-      return executionPromise;
+      return Promise.resolve(tool.fn(params));
     }
 
     const remaining = timeoutMs - (Date.now() - startMs);
     if (remaining <= 0) {
-      throw new ToolTimeoutError(tool.name, timeoutMs);
+      return Promise.reject(new ToolTimeoutError(tool.name, timeoutMs));
     }
 
-    const timeoutPromise = new Promise<never>((_, reject) => {
-      setTimeout(() => {
+    // Single Promise pattern: setTimeout directly rejects the returned promise.
+    // Avoids Promise.race which can cause unhandled rejection warnings in some environments.
+    return new Promise<unknown>((resolve, reject) => {
+      const timeoutId = setTimeout(() => {
         reject(new ToolTimeoutError(tool.name, timeoutMs));
       }, remaining);
-    });
 
-    return Promise.race([executionPromise, timeoutPromise]);
+      Promise.resolve(tool.fn(params)).then(
+        (result) => {
+          clearTimeout(timeoutId);
+          resolve(result);
+        },
+        (error) => {
+          clearTimeout(timeoutId);
+          reject(error);
+        },
+      );
+    });
   }
 
   /**
