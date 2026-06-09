@@ -45,6 +45,7 @@ Thumbs.db
 
 # 测试运行产生的临时文件
 *_test.json
+test_*.json
 trajectories.json
 trajectory_demo.json
 eval_trajectories.json
